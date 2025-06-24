@@ -58,10 +58,10 @@ electron: {
 3. Crear un nuevo release en GitHub con el formato `1.0.0`
 4. Subir los archivos generados al release
 5. Para usar el script de las releases se debe
-  Instalar `https://cli.github.com/`
-   Utilizar `gh auth` para iniciar sesion.
-   Actualizar `apiUrl` con el repositorio y el `GITHUB_TOKEN`
-  Reglas para la `versión` en package.json (semver)
+  - Instalar `https://cli.github.com/`
+  - Utilizar `gh auth` para iniciar sesion.
+  - Actualizar `apiUrl` con el repositorio y el `GITHUB_TOKEN`
+  - Reglas para la `versión` en package.json (semver)
 ```
   Solo números y puntos: X.Y.Z
   Sin letras al principio ni ceros a la izquierda
