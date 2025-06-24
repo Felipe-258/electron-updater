@@ -44,34 +44,12 @@ electron: {
 
 3. Crear la carpeta `src-electron` con el archivo principal de Electron
 
-4. Configurar el `package.json` con la versión y los scripts:
-
-```json
-{
-  "version": "1.0.0",
-  "scripts": {
-    "electron": "quasar dev -m electron",
-    "electron:build": "quasar build -m electron"
-  }
-}
-```
-
 ## Características Implementadas
 
 - Actualizaciones automáticas desde GitHub
 - IPC Communication
 - Integración con la UI de Quasar
 - Manejo de ventanas nativas
-
-## Desarrollo
-
-```bash
-# Desarrollo
-npm run electron
-
-# Build
-npm run electron:build
-```
 
 ## Publicación de Actualizaciones
 
@@ -81,6 +59,8 @@ npm run electron:build
 4. Subir los archivos generados al release
 5. Para usar el script de las releases se debe
   Instalar `https://cli.github.com/`
+   Utilizar `gh auth` para iniciar sesion.
+   Actualizar `apiUrl` con el repositorio y el `GITHUB_TOKEN`
   Reglas para la `versión` en package.json (semver)
 ```
   Solo números y puntos: X.Y.Z
