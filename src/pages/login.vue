@@ -54,7 +54,7 @@
           </div>
 
           <div class="q-pa-xs text-center">
-            <q-btn type="submit" class="css-boton" label="Ingresar" />
+            <q-btn :disable="descargando" type="submit" class="css-boton" label="Ingresar" />
           </div>
         </q-form>
 
@@ -90,8 +90,8 @@ export default {
     const log = mostrarLog()
     const $q = useQuasar()
     const ejecutar = pedirDatos()
-    const usuario = ref('suchmanspablo@gmail.com')
-    const password = ref('1793')
+    const usuario = ref('')
+    const password = ref('')
     const cuentas = ref([])
     const mensaje = ref('')
     const version = ref('')
@@ -99,31 +99,32 @@ export default {
     const progreso = ref(0)
     const logActualizacion = ref([])
     onMounted(() => {
-      if (window && window.require) {
-        const { ipcRenderer } = window.require('electron')
-        version.value = ipcRenderer.sendSync('get-app-version')
-
-        ipcRenderer.invoke('check-update-and-install').then(result => {
+      /* console.log(window.electronAPI) */
+      if (window.electronAPI) {
+        version.value = window.electronAPI.getAppVersion()
+        /* console.log('antes del chequeo') */
+        window.electronAPI.checkUpdateAndInstall().then(result => {
+          /* console.log('pre-antes del chequeo') */
           if (result.updated) {
             mensaje.value = result.message
           }
         })
+        /* console.log('despues del chequeo') */
 
-        ipcRenderer.on('update-log', (event, log) => {
+        window.electronAPI.onUpdateLog((event, log) => {
+          /* console.log('update-log recibido:', log) */
           logActualizacion.value.push(log)
         })
-        // ...existing code...
-        ipcRenderer.on('update-progress', (event, percent) => {
+        window.electronAPI.onUpdateProgress((event, percent) => {
           if (percent === -1 || percent === null) {
-            // Oculta la barra
             descargando.value = false
           } else {
             descargando.value = true
             progreso.value = percent
           }
         })
-
-        // ...existing code...
+      } else {
+        /* console.log('no es electron') */
       }
       if (sessionStorage.get('FacturaloSimple-version')) {
         if (sessionStorage.get('FacturaloSimple-version') !== store.state.modGestion.version) {
@@ -158,8 +159,7 @@ export default {
         await ejecutar.funcEjecutar('', enviar, store.state.modGestion.URL_WS_LOGIN)
           .then(res => {
             if (res.resultado === 'Aceptar') {
-              // sessionStorage.set('FacturaloSimple-conexion', res.conexiones[0].conexion, { expires: '1Y' })
-              sessionStorage.set('FacturaloSimple-conexion', res.conexiones[0].conexion)
+              sessionStorage.set('FacturaloSimple-conexion', res.conexiones[0].conexion, { expires: '1Y' })
               sessionStorage.set('FacturaloSimple-autenticado', true, { expires: '8h' })
               sessionStorage.set('FacturaloSimple-nombreCuenta', res.conexiones[0].nom_cuenta, { expires: '1Y' })
               sessionStorage.set('FacturaloSimple-nroCuenta', res.conexiones[0].nro_cuenta, { expires: '1Y' })
@@ -201,9 +201,9 @@ export default {
                   }
                 }
               })
-            console.log('Antes de router.push')
+            /* console.log('Antes de router.push') */
             router.push('/')
-            console.log('Después de router.push')
+            /* console.log('Después de router.push') */
           })
           .catch(err => log.err(err))
       } else {

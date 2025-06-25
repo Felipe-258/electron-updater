@@ -51,13 +51,14 @@ function createWindow () {
   mainWindow.loadURL(process.env.APP_URL)
 
   if (process.env.DEBUGGING) {
-    // if on DEV or Production with debug enabled
+    // Desarrollo
     mainWindow.webContents.openDevTools()
   } else {
-    // we're on production; no access to devtools pls
+    // Produccion
     mainWindow.webContents.on('devtools-opened', () => {
-      /* mainWindow.webContents.closeDevTools() */
+      mainWindow.webContents.closeDevTools()
     })
+    mainWindow.removeMenu()
   }
 
   mainWindow.on('closed', () => {
@@ -128,7 +129,7 @@ function enviarProgreso (percent) {
 async function checkAndUpdateFromGithub () {
   /* enviarLog('Buscando nueva versión...') */
   enviarProgreso(-1) // <- Esto es clave
-  const apiUrl = 'https://api.github.com/repos/TU-REPO'
+  const apiUrl = 'https://api.github.com/repos/TU-USUARIO/TU-REPO/releases/latest'
   const GITHUB_TOKEN = 'TU-TOKEN'
 
   const headers = GITHUB_TOKEN
@@ -153,7 +154,8 @@ async function checkAndUpdateFromGithub () {
   // El tag del release debe ser igual al valor de "version" en package.json
   const latestVersion = release.tag_name.replace(/^v/, '') // quita la "v" si la tiene
 
-  enviarLog(`Versión actual: ${currentVersion}, última versión: ${latestVersion}`)
+  enviarLog(`Versión actual: ${currentVersion}`)
+  enviarLog(`Última versión: ${latestVersion}`)
   if (latestVersion === currentVersion) {
     /* enviarLog('Ya tienes la última versión.') */
     return { updated: false, message: 'Ya tienes la última versión.' }

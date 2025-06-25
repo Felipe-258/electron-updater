@@ -21,3 +21,9 @@ contextBridge.exposeInMainWorld('electron', {
   printDirectly: (buffer, filename) => ipcRenderer.send('print-pdf', { buffer, filename })
 
 })
+contextBridge.exposeInMainWorld('electronAPI', {
+  getAppVersion: () => ipcRenderer.sendSync('get-app-version'),
+  checkUpdateAndInstall: () => ipcRenderer.invoke('check-update-and-install'),
+  onUpdateLog: (callback) => ipcRenderer.on('update-log', callback),
+  onUpdateProgress: (callback) => ipcRenderer.on('update-progress', callback)
+})
