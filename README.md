@@ -7,11 +7,9 @@ An electron App exported with Quasar, check the user current version and the Git
 
 Este repositorio muestra cómo convertir una aplicación Quasar en una aplicación de escritorio usando Electron.
 
-## Requisitos Previos
-
-```bash
-npm install -g @quasar/cli
-```
+## Versiones testeadas
+- Node: v20.17.0
+- Quasar: 2.4.2
 
 ## Instalación
 
@@ -19,6 +17,12 @@ npm install -g @quasar/cli
 
 ```bash
 npm install electron electron-builder electron-updater --save-dev
+```
+```bash
+npm install pdf-to-printer
+```
+```bash
+npm install node-fetch
 ```
 
 2. Configurar `quasar.conf.js`:
@@ -42,14 +46,9 @@ electron: {
 }
 ```
 
-3. Crear la carpeta `src-electron` con el archivo principal de Electron
+## Verificacion de Actualizaciones
 
-## Características Implementadas
-
-- Actualizaciones automáticas desde GitHub
-- IPC Communication
-- Integración con la UI de Quasar
-- Manejo de ventanas nativas
+- Actualizar `apiUrl` con el repositorio y el `GITHUB_TOKEN` en `electron-main.js` que es a donde va a revisar si se tiene la ultima version.
 
 ## Publicación de Actualizaciones
 
@@ -60,7 +59,8 @@ electron: {
 6. Para usar el script de las releases se debe
   - Instalar `https://cli.github.com/`
   - Utilizar `gh auth` para iniciar sesion.
-  - Actualizar `apiUrl` con el repositorio y el `GITHUB_TOKEN`
+  - Actualizar `apiUrl` con el repositorio y el `GITHUB_TOKEN` en `electron-main.js`
+  - Actualizar `repo` en `realese.js`
   - Reglas para la `versión` en package.json (semver)
 ```
   Solo números y puntos: X.Y.Z
