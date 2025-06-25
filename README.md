@@ -56,8 +56,8 @@ electron: {
 1. Actualizar la versión en `package.json`
 2. Hacer build de la aplicación
 3. Crear un nuevo release en GitHub con el formato `1.0.0`
-4. Subir los archivos generados al release
-5. Para usar el script de las releases se debe
+4. Subir los archivos generados al release en el repositorio
+6. Para usar el script de las releases se debe
   - Instalar `https://cli.github.com/`
   - Utilizar `gh auth` para iniciar sesion.
   - Actualizar `apiUrl` con el repositorio y el `GITHUB_TOKEN`
@@ -71,7 +71,6 @@ electron: {
     "2025.5.13-beta"
     "2025.5.13-1"
 ```
-7. *Opcional: utilizando node release
 
 ## Estructura del Proyecto
 
