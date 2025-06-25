@@ -46,9 +46,7 @@ electron: {
 }
 ```
 
-3. Crear la carpeta `src-electron` con el archivo principal de Electron
-
-## Verificacion de Actualizaciones se debe
+## Verificacion de Actualizaciones
 
 - Actualizar `apiUrl` con el repositorio y el `GITHUB_TOKEN` en `electron-main.js` que es a donde va a revisar si se tiene la ultima version.
 
