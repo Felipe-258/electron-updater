@@ -18,10 +18,12 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('electron', {
+  // Expone función para imprimir PDFs directamente desde el renderer
   printDirectly: (buffer, filename) => ipcRenderer.send('print-pdf', { buffer, filename })
 
 })
 contextBridge.exposeInMainWorld('electronAPI', {
+  // Expone funciones para actualización y logs de actualización al renderer
   getAppVersion: () => ipcRenderer.sendSync('get-app-version'),
   checkUpdateAndInstall: () => ipcRenderer.invoke('check-update-and-install'),
   onUpdateLog: (callback) => ipcRenderer.on('update-log', callback),

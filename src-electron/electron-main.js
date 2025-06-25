@@ -6,17 +6,20 @@ const { autoUpdater } = require('electron-updater')
 const fetch = require('node-fetch')
 const path = require('path')
 
-// needed in case process is undefined under Linux
+// Importaciones principales de Electron y módulos de Node.js
+
+// Detecta el sistema operativo actual
 const platform = process.platform || os.platform()
 
 try {
+  // Elimina extensiones de DevTools en Windows si está en modo oscuro
   if (platform === 'win32' && nativeTheme.shouldUseDarkColors === true) {
     fs.unlinkSync(path.join(app.getPath('userData'), 'DevTools Extensions'))
   }
 } catch (_) { }
 
 let mainWindow
-// Mueve esta llamada DENTRO del evento 'when-ready'
+// Evento principal: cuando la app está lista, crea la ventana y borra instaladores viejos
 app.whenReady().then(() => {
   createWindow()
   borrarInstaladoresViejos()
@@ -34,7 +37,7 @@ app.whenReady().then(() => {
 
 function createWindow () {
   /**
-   * Initial window options
+   * Configuración inicial de la ventana principal de la app
    */
   mainWindow = new BrowserWindow({
     icon: path.resolve(__dirname, 'icons/icon.png'), // tray icon
@@ -66,6 +69,7 @@ function createWindow () {
   })
 }
 
+// Eventos de ciclo de vida de la aplicación (cerrar, activar)
 app.on('window-all-closed', () => {
   if (platform !== 'darwin') {
     app.quit()
@@ -98,26 +102,19 @@ ipcMain.on('print-pdf', (event, { buffer, filename }) => {
   })
 })
 
+// Evento para iniciar la búsqueda de actualizaciones en producción
 app.on('ready', () => {
   if (process.env.NODE_ENV === 'production') {
     autoUpdater.checkForUpdatesAndNotify()
   }
 })
 
-ipcMain.on('check-for-updates', () => {
-  autoUpdater.checkForUpdatesAndNotify()
-})
-
-autoUpdater.on('update-downloaded', () => {
-  // Puedes mostrar un diálogo para reiniciar o reiniciar automáticamente
-  autoUpdater.quitAndInstall()
-})
-
+// Evento para obtener la versión actual de la app
 ipcMain.on('get-app-version', (event) => {
   event.returnValue = app.getVersion()
 })
 
-// Función para loguear mensajes al renderer
+// Función auxiliar para enviar logs y progreso al renderer
 function enviarLog (mensaje) {
   if (mainWindow) mainWindow.webContents.send('update-log', mensaje)
 }
@@ -125,7 +122,7 @@ function enviarProgreso (percent) {
   if (mainWindow) mainWindow.webContents.send('update-progress', percent)
 }
 
-// Función principal de actualización
+// Función principal: chequea si hay una nueva versión en GitHub y la instala si corresponde
 async function checkAndUpdateFromGithub () {
   /* enviarLog('Buscando nueva versión...') */
   enviarProgreso(-1) // <- Esto es clave
@@ -216,7 +213,7 @@ async function checkAndUpdateFromGithub () {
   // Agrega lógica similar para otros sistemas operativos si lo necesitas
 }
 
-// IPC para llamar desde el renderer (por ejemplo, desde login.vue)
+// IPC handler para que el renderer pueda disparar la actualización
 ipcMain.handle('check-update-and-install', async () => {
   try {
     return await checkAndUpdateFromGithub()
@@ -225,6 +222,7 @@ ipcMain.handle('check-update-and-install', async () => {
   }
 })
 
+// Borra instaladores viejos para evitar acumulación de archivos
 function borrarInstaladoresViejos () {
   const userDir = app.getPath('userData')
   fs.readdir(userDir, (err, files) => {

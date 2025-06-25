@@ -1,3 +1,5 @@
+// Script para automatizar la publicación de releases en GitHub con los instaladores generados
+
 const { execSync } = require('child_process')
 const fs = require('fs')
 const path = require('path')
@@ -29,6 +31,7 @@ function buscarInstaladores (dir) {
   return encontrados
 }
 
+// Busca recursivamente los instaladores en la carpeta dist/electron
 const assets = buscarInstaladores(distDir)
 
 if (assets.length === 0) {
@@ -49,10 +52,14 @@ try {
 }
 const tag = version // Sin "v" al inicio
 
+// Lee la versión desde package.json y prepara el tag del release
+
 try {
   execSync(`gh release create ${tag} ${assets.map(a => `"${a}"`).join(' ')} --repo ${repo} --title "Versión ${version}" --notes "Release automático de FacturaloSimpleV3"`, { stdio: 'inherit' })
 } catch (e) {
   execSync(`gh release upload ${tag} ${assets.map(a => `"${a}"`).join(' ')} --repo ${repo} --clobber`, { stdio: 'inherit' })
 }
+
+// Publica el release en GitHub usando la CLI 'gh', o sube los assets si el release ya existe
 
 /* console.log('Release publicado correctamente en', repo) */

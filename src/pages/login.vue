@@ -1,4 +1,5 @@
 <template>
+  <!-- Interfaz de login con Quasar y barra de progreso de actualización -->
   <q-layout class="fondo-pantalla flex flex-center">
     <q-page-container>
       <q-card class="bg-login q-pa-xs q-mx-auto" style="width: 45vh;">
@@ -74,6 +75,7 @@
 </template>
 
 <script>
+// Importaciones de Quasar, Vue y utilidades propias
 import { useQuasar } from 'quasar'
 import pedirDatos from '../components/pedirDatos.js'
 import { ref, onMounted } from 'vue'
@@ -84,6 +86,7 @@ import sessionStorage from 'src/components/sessionStorage'
 
 export default {
   setup (props, context) {
+    // Inicialización de store, router, refs y utilidades
     const store = useStore()
     const router = useRouter()
     const route = useRoute()
@@ -99,6 +102,7 @@ export default {
     const progreso = ref(0)
     const logActualizacion = ref([])
     onMounted(() => {
+      // Al montar el componente: chequea actualizaciones, limpia sesión y maneja flags
       /* console.log(window.electronAPI) */
       if (window.electronAPI) {
         version.value = window.electronAPI.getAppVersion()
@@ -147,6 +151,7 @@ export default {
       }
     })
 
+    // Función de login: valida usuario, consulta API y guarda sesión
     async function btnOk () {
       $q.loading.show({
         message: 'Aguarde un momento...',
@@ -212,14 +217,17 @@ export default {
       $q.loading.hide()
     }
 
+    // Redirige a la pantalla de recuperación de contraseña
     function recuperarPassword () {
       router.push('/recuperarPassword')
     }
 
+    // Redirige a la pantalla de registro
     function registrarse () {
       router.push('/registrarse')
     }
 
+    // Retorna las variables y funciones al template
     return {
       ...pedirDatos(),
       store,
@@ -240,6 +248,7 @@ export default {
 </script>
 
 <style scoped>
+  /* Estilos personalizados para la pantalla de login */
   .bg-login {
     background-color : #fff
   }

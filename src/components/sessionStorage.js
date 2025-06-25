@@ -1,7 +1,9 @@
+// Detecta si la app corre en Electron o en navegador
 const isElectron = () => {
   return !!(window && window.process && window.process.type)
 }
 
+// Parsea el formato de expiración (años, horas, milisegundos)
 function parseExpires (expires) {
   if (!expires) return null
   if (typeof expires === 'string' && expires.endsWith('Y')) {
@@ -19,6 +21,7 @@ function parseExpires (expires) {
 }
 
 const session = {
+  // Guarda un valor en sessionStorage o en el almacenamiento de Electron, con expiración opcional
   set (key, value, options = {}) {
     const expires = options.expires ? parseExpires(options.expires) : null
     const data = JSON.stringify({ value, expires })
@@ -28,6 +31,7 @@ const session = {
       window.sessionStorage.setItem(key, data)
     }
   },
+  // Obtiene un valor, chequeando si expiró
   get (key) {
     let data
     if (isElectron() && window.electronAPI) {
@@ -49,6 +53,7 @@ const session = {
       return data
     }
   },
+  // Elimina un valor del almacenamiento
   remove (key) {
     if (isElectron() && window.electronAPI) {
       window.electronAPI.removeSessionItem(key)
